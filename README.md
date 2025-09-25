@@ -1,6 +1,15 @@
 # devhosts
 
-`devhosts` is a Go CLI that keeps local hostnames and Caddy in sync. It automates the busywork of mapping bare names (e.g., `user`, `admin`) to local services by safely rewriting `/etc/hosts`, regenerating a dedicated Caddy include file, and reloading Caddy. The tool solves the drift that happens when you juggle host entries, TLS, and reverse proxies by hand.
+`devhosts` is a Go CLI for assigning hostnames to local addresses.
+
+```
+localhost:8000 => https://user/
+localhost:8000 => https://admin/
+localhost:5000 => https://api/
+localhost:3000 => https://frontend/
+```
+
+This tool keeps local hostnames and Caddy in sync. It cleanly automates the work of mapping bare names (e.g., `user`, `admin`) to local services by safely rewriting `/etc/hosts`, regenerating a dedicated Caddy include file, and reloading Caddy. The tool solves the drift that happens when you juggle host entries, TLS, and reverse proxies by hand.
 
 ## What It Solves
 - **Single source of truth** – Manage every hostname, upstream URL, and TLS flag in `devhosts.json` rather than scattered across scripts and configs.
