@@ -1,0 +1,17 @@
+# Build artifacts
+/bin/
+/dist/
+
+# Go build caches
+go.sum
+.gocache/
+.gomodcache/
+
+# Editor and OS noise
+.DS_Store
+.idea/
+.vscode/
+
+# Logs and temp files
+*.log
+*.tmp
