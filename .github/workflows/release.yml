@@ -23,10 +23,6 @@ jobs:
             goarch: amd64
           - goos: darwin
             goarch: arm64
-    env:
-      GOOS: ${{ matrix.goos }}
-      GOARCH: ${{ matrix.goarch }}
-      CGO_ENABLED: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,15 +38,19 @@ jobs:
       - name: Run go vet
         run: go vet ./...
       - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
         run: |
-          mkdir -p dist/${GOOS}-${GOARCH}
-          go build -o dist/${GOOS}-${GOARCH}/devhosts ./cmd/devhosts
+          mkdir -p dist/${{ matrix.goos }}-${{ matrix.goarch }}
+          go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/devhosts ./cmd/devhosts
       - name: Package archive
         run: |
-          tar -C dist/${GOOS}-${GOARCH} -czf dist/devhosts-${GOOS}-${GOARCH}.tar.gz devhosts
+          tar -C dist/${{ matrix.goos }}-${{ matrix.goarch }} -czf dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz devhosts
       - name: Generate checksum
         run: |
-          shasum -a 256 dist/devhosts-${GOOS}-${GOARCH}.tar.gz > dist/devhosts-${GOOS}-${GOARCH}.sha256
+          shasum -a 256 dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz > dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
