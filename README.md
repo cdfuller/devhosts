@@ -19,7 +19,7 @@ This tool keeps local hostnames and Caddy in sync. It cleanly automates the work
 
 ## Prerequisites
 - macOS (arm64/amd64) with sudo access for modifying `/etc/hosts`.
-- Caddy installed and configured with an `import ~/.devhosts.caddy` (absolute path) directive in your base Caddyfile.
+- Caddy installed ([see Caddy docs](https://caddyserver.com/docs/install)) and configured with an `import ~/.devhosts.caddy` (absolute path) directive in your base Caddyfile.
 - A writable `~/.devhosts.caddy` include file that Caddy can reload without manual edits.
 
 ## Quick Start
