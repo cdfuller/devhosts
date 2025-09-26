@@ -5,12 +5,17 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string (e.g., v0.1.0) when running manually'
+        required: false
 
 permissions:
   contents: write
 
 env:
   GO_VERSION_FILE: go.mod
+  VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.event.inputs.version || 'dev' }}
 
 jobs:
   build:
@@ -47,17 +52,17 @@ jobs:
           go build -o dist/${{ matrix.goos }}-${{ matrix.goarch }}/devhosts ./cmd/devhosts
       - name: Package archive
         run: |
-          tar -C dist/${{ matrix.goos }}-${{ matrix.goarch }} -czf dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz devhosts
+          tar -C dist/${{ matrix.goos }}-${{ matrix.goarch }} -czf dist/devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz devhosts
       - name: Generate checksum
         run: |
-          shasum -a 256 dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz > dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+          shasum -a 256 dist/devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz > dist/devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: devhosts-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}
           path: |
-            dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
-            dist/devhosts-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
+            dist/devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+            dist/devhosts-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.sha256
           if-no-files-found: error
 
   release:
